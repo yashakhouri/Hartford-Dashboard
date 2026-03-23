@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hartford Medical Campus — PRECEDE Health Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0F0F0E;
+    --ink2: #3A3935;
+    --ink3: #7A7870;
+    --ink4: #AEACA4;
+    --bg: #F2F0EB;
+    --bg2: #E8E6DF;
+    --bg3: #DDDBD3;
+    --white: #FAFAF8;
+    --red: #C83B3B;
+    --red-lt: #F5E4E4;
+    --amber: #B87318;
+    --amber-lt: #F5EAD6;
+    --blue: #1A5FA0;
+    --blue-lt: #E0EBF7;
+    --green: #2D6B3A;
+    --green-lt: #E0EEE3;
+    --accent: #C83B3B;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 14px; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--ink); line-height: 1.5; }
+
+  /* ── Layout ── */
+  .page { max-width: 1280px; margin: 0 auto; padding: 0 2rem 4rem; }
+
+  /* ── Header ── */
+  .site-header {
+    background: var(--ink);
+    color: var(--white);
+    padding: 2.5rem 2rem 2rem;
+    margin-bottom: 2rem;
+  }
+  .site-header .inner { max-width: 1280px; margin: 0 auto; }
+  .header-eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink4);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .header-title { font-size: 2rem; font-weight: 300; line-height: 1.2; margin-bottom: 0.5rem; }
+  .header-title strong { font-weight: 500; }
+  .header-sub { font-size: 12px; color: var(--ink4); font-family: var(--mono); }
+  .header-meta { display: flex; gap: 2rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #2A2A28; flex-wrap: wrap; }
+  .header-stat { }
+  .header-stat .val { font-size: 2rem; font-weight: 500; color: var(--white); font-family: var(--mono); }
+  .header-stat .val.danger { color: #E87070; }
+  .header-stat .label { font-size: 10px; color: var(--ink4); text-transform: uppercase; letter-spacing: 0.1em; font-family: var(--mono); margin-top: 2px; }
+
+  /* ── Nav tabs ── */
+  .nav-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--bg3); margin-bottom: 2rem; overflow-x: auto; }
+  .nav-tab {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--ink3);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .nav-tab:hover { color: var(--ink); }
+  .nav-tab.active { color: var(--ink); border-bottom-color: var(--ink); font-weight: 500; }
+
+  /* ── Panels ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── Section header ── */
+  .section-header { margin-bottom: 1.5rem; }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin-bottom: 0.35rem;
+  }
+  .section-title { font-size: 1.1rem; font-weight: 500; color: var(--ink); }
+  .section-desc { font-size: 12px; color: var(--ink3); margin-top: 0.25rem; line-height: 1.6; }
+
+  /* ── Grid systems ── */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  @media (max-width: 900px) { .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--bg3);
+    border-radius: 4px;
+    padding: 1.25rem;
+  }
+  .card-dark {
+    background: var(--ink);
+    color: var(--white);
+    border-radius: 4px;
+    padding: 1.25rem;
+  }
+
+  /* ── Stat cards ── */
+  .stat-card { background: var(--white); border: 1px solid var(--bg3); border-radius: 4px; padding: 1rem 1.25rem; }
+  .stat-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink3); margin-bottom: 0.5rem; }
+  .stat-val { font-size: 1.8rem; font-weight: 500; color: var(--ink); line-height: 1; font-family: var(--mono); }
+  .stat-val.red { color: var(--red); }
+  .stat-val.amber { color: var(--amber); }
+  .stat-val.blue { color: var(--blue); }
+  .stat-compare { font-size: 11px; color: var(--ink3); margin-top: 0.4rem; font-family: var(--mono); }
+  .stat-delta { font-weight: 500; }
+  .stat-delta.up { color: var(--red); }
+  .stat-delta.down { color: var(--green); }
+
+  /* ── Bar rows ── */
+  .bars-block { display: flex; flex-direction: column; gap: 0; }
+  .bar-row { display: grid; grid-template-columns: 190px 1fr 80px; align-items: center; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--bg2); }
+  .bar-row:last-child { border-bottom: none; }
+  .bar-name { font-size: 12px; color: var(--ink2); text-align: right; }
+  .bar-track { position: relative; height: 8px; background: var(--bg2); border-radius: 2px; overflow: visible; }
+  .bar-fill { height: 100%; border-radius: 2px; }
+  .bar-ct-mark { position: absolute; top: -4px; width: 1.5px; height: 16px; background: var(--ink3); opacity: 0.6; }
+  .bar-meta { font-family: var(--mono); font-size: 11px; display: flex; flex-direction: column; }
+  .bar-pct { font-weight: 500; color: var(--ink); }
+  .bar-diff { font-size: 10px; }
+  .bar-diff.up { color: var(--red); }
+  .bar-diff.down { color: var(--green); }
+  .bar-diff.neutral { color: var(--ink3); }
+
+  /* ── Legend ── */
+  .legend { display: flex; gap: 1.5rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink3); font-family: var(--mono); }
+  .legend-sq { width: 10px; height: 10px; border-radius: 1px; }
+  .legend-line { width: 14px; height: 2px; background: var(--ink3); opacity: 0.5; }
+
+  /* ── Alert/callout ── */
+  .callout {
+    border-left: 3px solid var(--red);
+    background: var(--red-lt);
+    padding: 1rem 1.25rem;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 1.5rem;
+  }
+  .callout-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--red); margin-bottom: 0.35rem; }
+  .callout-text { font-size: 13px; color: var(--ink); line-height: 1.6; }
+  .callout-text strong { font-weight: 500; }
+
+  .callout.amber { border-left-color: var(--amber); background: var(--amber-lt); }
+  .callout.amber .callout-label { color: var(--amber); }
+  .callout.blue { border-left-color: var(--blue); background: var(--blue-lt); }
+  .callout.blue .callout-label { color: var(--blue); }
+
+  /* ── Neighborhood table ── */
+  .nbhd-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .nbhd-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink3);
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--bg3);
+    font-weight: 400;
+  }
+  .nbhd-table td { padding: 10px 12px; border-bottom: 1px solid var(--bg2); vertical-align: middle; }
+  .nbhd-table tr:last-child td { border-bottom: none; }
+  .nbhd-table tr:hover td { background: var(--bg2); }
+  .nbhd-name { font-weight: 500; color: var(--ink); }
+  .nbhd-desc { font-size: 10px; color: var(--ink3); margin-top: 1px; }
+  .sev-dot {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    margin-right: 6px; vertical-align: middle;
+  }
+  .sev-3 { background: var(--red); }
+  .sev-2 { background: var(--amber); }
+  .sev-1 { background: #A0A89A; }
+  .bar-mini { display: inline-block; height: 6px; border-radius: 2px; vertical-align: middle; }
+
+  /* ── Design response cards ── */
+  .design-card { background: var(--white); border: 1px solid var(--bg3); border-radius: 4px; padding: 1.25rem; }
+  .design-scale {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+  }
+  .scale-arch { background: var(--blue-lt); color: var(--blue); }
+  .scale-int  { background: var(--green-lt); color: var(--green); }
+  .scale-urban { background: var(--amber-lt); color: var(--amber); }
+  .design-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 0.5rem; line-height: 1.4; }
+  .design-body { font-size: 12px; color: var(--ink2); line-height: 1.65; }
+  .design-driver { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--bg2); font-family: var(--mono); font-size: 10px; color: var(--ink3); }
+
+  /* ── Forgotten indicator cards ── */
+  .forgotten-card {
+    background: var(--ink);
+    color: var(--white);
+    border-radius: 4px;
+    padding: 1.5rem;
+  }
+  .forgotten-num {
+    font-family: var(--mono);
+    font-size: 2.2rem;
+    font-weight: 300;
+    color: #E87070;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .forgotten-num.amber { color: #E0A060; }
+  .forgotten-num.blue { color: #70A8E0; }
+  .forgotten-title { font-size: 13px; font-weight: 500; margin-bottom: 0.5rem; color: var(--white); }
+  .forgotten-body { font-size: 11.5px; color: #888884; line-height: 1.6; }
+  .forgotten-source { font-family: var(--mono); font-size: 9px; color: #555552; margin-top: 0.75rem; }
+
+  /* ── Spacer ── */
+  .spacer { height: 2rem; }
+  .spacer-sm { height: 1rem; }
+
+  /* ── Source footer ── */
+  .source-bar { border-top: 1px solid var(--bg3); margin-top: 3rem; padding-top: 1rem; font-family: var(--mono); font-size: 10px; color: var(--ink4); line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="inner">
+    <div class="header-eyebrow">PRECEDE Health Profile · Downtown Hartford CT · Hartford Hospital Campus</div>
+    <h1 class="header-title">Community health conditions<br><strong>surrounding 80 Seymour St</strong></h1>
+    <div class="header-sub">CDC PLACES 2024 · DataHaven 2023 · HHC CHNA 2025 · Perkins &amp; Will PRECEDE Framework</div>
+    <div class="header-meta">
+      <div class="header-stat">
+        <div class="val danger">20 yrs</div>
+        <div class="label">Life expectancy gap — NE Hartford vs Westport, same state</div>
+      </div>
+      <div class="header-stat">
+        <div class="val danger">68.9</div>
+        <div class="label">Life expectancy, NE Hartford census tracts (94% Black + Hispanic)</div>
+      </div>
+      <div class="header-stat">
+        <div class="val danger">2×</div>
+        <div class="label">Preventable hospitalization rate vs CT average</div>
+      </div>
+      <div class="header-stat">
+        <div class="val danger">52%</div>
+        <div class="label">Hispanic enrollees in CT with no primary care provider</div>
+      </div>
+      <div class="header-stat">
+        <div class="val">$1,323</div>
+        <div class="label">CT ALS ambulance rate — uninsured pay full bill</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- NAV TABS -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('overview')">Overview</button>
+    <button class="nav-tab" onclick="switchTab('access')">Access barriers</button>
+    <button class="nav-tab" onclick="switchTab('neighborhoods')">Neighborhood breakdown</button>
+    <button class="nav-tab" onclick="switchTab('forgotten')">What gets missed</button>
+    <button class="nav-tab" onclick="switchTab('design')">Design responses</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 1 — OVERVIEW
+  ══════════════════════════════════════════ -->
+  <div class="panel active" id="tab-overview">
+
+    <div class="callout">
+      <div class="callout-label">Context</div>
+      <div class="callout-text">Hartford Hospital is a 65-acre campus in the middle of some of the most medically underserved census tracts in New England. <strong>Proximity to a major hospital does not equal access.</strong> Residents in adjacent neighborhoods — Asylum Hill, Frog Hollow, Clay Arsenal — have chronic disease rates 40–70% above state averages, yet routine preventive care remains out of reach due to cost, language, transportation, and insurance barriers.</div>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:1.5rem;">
+      <div class="stat-card">
+        <div class="stat-label">Diabetes</div>
+        <div class="stat-val red">18.4%</div>
+        <div class="stat-compare">CT avg 10.8% <span class="stat-delta up">+70%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Poor mental health</div>
+        <div class="stat-val red">23.1%</div>
+        <div class="stat-compare">CT avg 16.2% <span class="stat-delta up">+43%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Obesity</div>
+        <div class="stat-val red">36.2%</div>
+        <div class="stat-compare">CT avg 27.5% <span class="stat-delta up">+32%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Current asthma</div>
+        <div class="stat-val red">16.8%</div>
+        <div class="stat-compare">CT avg 10.2% <span class="stat-delta up">+65%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">High blood pressure</div>
+        <div class="stat-val amber">41.6%</div>
+        <div class="stat-compare">CT avg 32.1% <span class="stat-delta up">+30%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Depression</div>
+        <div class="stat-val amber">32.2%</div>
+        <div class="stat-compare">CT avg 23.4% <span class="stat-delta up">+38%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Physical inactivity</div>
+        <div class="stat-val amber">35.1%</div>
+        <div class="stat-compare">CT avg 22.3% <span class="stat-delta up">+57%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Uninsured (Hartford)</div>
+        <div class="stat-val red">10.6%</div>
+        <div class="stat-compare">CT avg 5.6% — and <span class="stat-delta up">rising</span></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-header">
+          <div class="section-label">Health outcomes vs CT average</div>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-sq" style="background:var(--red);"></span>Hartford</div>
+          <div class="legend-item"><span class="legend-line"></span>CT state avg</div>
+        </div>
+        <div class="bars-block" id="bars-outcomes"></div>
+      </div>
+      <div class="card">
+        <div class="section-header">
+          <div class="section-label">Prevention gaps — where care is skipped</div>
+          <div class="section-desc">Higher = better. Hartford lags state despite being blocks from a major medical campus.</div>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-sq" style="background:var(--blue);"></span>Hartford</div>
+          <div class="legend-item"><span class="legend-line"></span>CT state avg</div>
+        </div>
+        <div class="bars-block" id="bars-prevention"></div>
+        <div class="spacer-sm"></div>
+        <div class="section-header">
+          <div class="section-label">Risk behaviors</div>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-sq" style="background:var(--amber);"></span>Hartford</div>
+          <div class="legend-item"><span class="legend-line"></span>CT state avg</div>
+        </div>
+        <div class="bars-block" id="bars-behaviors"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 2 — ACCESS BARRIERS
+  ══════════════════════════════════════════ -->
+  <div class="panel" id="tab-access">
+
+    <div class="callout amber">
+      <div class="callout-label">The access paradox</div>
+      <div class="callout-text">Hartford Hospital sits within a 1-mile radius of neighborhoods with the highest preventable hospitalization rates in Connecticut. The barriers are not geographic — they are <strong>financial, linguistic, structural, and institutional.</strong></div>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:1.5rem;">
+      <div class="stat-card">
+        <div class="stat-label">No primary care provider — Hispanic enrollees CT</div>
+        <div class="stat-val red">52%</div>
+        <div class="stat-compare">vs 19% white enrollees <span class="stat-delta up">+174%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">No primary care provider — Black enrollees CT</div>
+        <div class="stat-val red">46%</div>
+        <div class="stat-compare">vs 19% white enrollees <span class="stat-delta up">+142%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Missed appts due to transportation</div>
+        <div class="stat-val red">2×</div>
+        <div class="stat-compare">Hartford vs CT statewide average</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Hartford uninsured rate (2024)</div>
+        <div class="stat-val red">10.6%</div>
+        <div class="stat-compare">Was 9.7% in 2023 — <span class="stat-delta up">trending up</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Hispanic residents — Hartford</div>
+        <div class="stat-val">44.5%</div>
+        <div class="stat-compare">Spanish primary language in most of Frog Hollow + Clay Arsenal</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Foreign-born residents</div>
+        <div class="stat-val">23.7%</div>
+        <div class="stat-compare">Many undocumented, ineligible for Medicaid</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-label">Insurance literacy gap — CT enrollees without a PCP by race</div>
+        <div class="spacer-sm"></div>
+        <div class="bars-block" id="bars-pcp"></div>
+        <div style="margin-top:1rem;font-size:11px;color:var(--ink3);line-height:1.6;">
+          Having insurance does not mean using it. Low health insurance literacy — particularly around how to find and use a PCP — disproportionately affects Black and Hispanic enrollees in CT. Without a PCP, every health event routes through the ER.
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-label">Ambulance cost exposure — CT rates 2024</div>
+        <div class="spacer-sm"></div>
+        <div class="bars-block" id="bars-ambulance"></div>
+        <div style="margin-top:1rem;font-size:11px;color:var(--ink3);line-height:1.6;">
+          Ground ambulances are <strong>excluded from the No Surprises Act</strong>. An uninsured Hartford resident calling 911 for an ALS-level emergency receives a bill of $1,323+. For an ALICE household earning $35K–45K, this represents 3–4 weeks of net pay. <strong>50% of insured ambulance patients</strong> are still at risk of a surprise out-of-network bill.
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="section-header">
+      <div class="section-label">ALICE households — income vs. healthcare cost exposure</div>
+      <div class="section-desc">ALICE = Asset Limited, Income Constrained, Employed. Earn above poverty line but cannot afford basic expenses. 40% of CT households. In Hartford, this is the dominant economic condition.</div>
+    </div>
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="stat-label">ALICE threshold — single adult Hartford</div>
+        <div class="stat-val">~$31K</div>
+        <div class="stat-compare">Annual income needed for bare survival budget</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">ALS ambulance as % of monthly ALICE income</div>
+        <div class="stat-val red">~5%</div>
+        <div class="stat-compare">One emergency = one-twentieth of yearly income</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Hartford households — no vehicle</div>
+        <div class="stat-val">~38%</div>
+        <div class="stat-compare">CTfastrak + bus are primary access routes to HHC</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">CT housing cost-burdened — Hartford</div>
+        <div class="stat-val amber">~54%</div>
+        <div class="stat-compare">Over 30% income on rent; no margin for healthcare costs</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 3 — NEIGHBORHOOD BREAKDOWN
+  ══════════════════════════════════════════ -->
+  <div class="panel" id="tab-neighborhoods">
+
+    <div class="section-header">
+      <div class="section-label">Neighborhoods surrounding Hartford Hospital campus</div>
+      <div class="section-desc">The 65-acre campus is directly bounded by Asylum Hill (west/north), Clay Arsenal (north), Downtown (east), and Frog Hollow (south). Each has a distinct health profile. Data aggregated from CDC PLACES census-tract level, DataHaven 2023, CTData housing + health analysis.</div>
+    </div>
+
+    <div class="callout blue">
+      <div class="callout-label">Life expectancy — the design brief</div>
+      <div class="callout-text">Life expectancy in northeast Hartford tracts (94% Black and Hispanic) is <strong>68.9 years</strong>. Life expectancy in Westport (91% white) is <strong>89.1 years</strong>. That 20-year gap exists within the same small state. The design brief for the HHC campus expansion is not just clinical — it is a spatial justice intervention.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:1.5rem; overflow-x:auto;">
+      <table class="nbhd-table">
+        <thead>
+          <tr>
+            <th>Neighborhood</th>
+            <th>Proximity to HHC</th>
+            <th>Top health burden</th>
+            <th>Diabetes</th>
+            <th>Poor MH</th>
+            <th>Uninsured est.</th>
+            <th>Housing instability</th>
+            <th>Primary language</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="nbhd-name"><span class="sev-dot sev-3"></span>Asylum Hill</div>
+              <div class="nbhd-desc">Directly west of HHC campus</div>
+            </td>
+            <td><span style="font-family:var(--mono);font-size:11px;">0–0.5 mi</span></td>
+            <td><span style="font-size:11px;">Asthma, MH, housing</span></td>
+            <td>
+              <span style="font-family:var(--mono);font-size:12px;font-weight:500;">~20%</span>
+              <div style="margin-top:4px;"><span class="bar-mini" style="width:60px;background:var(--red);"></span></div>
+            </td>
+            <td><span style="font-family:var(--mono);font-size:12px;">~24%</span></td>
+            <td><span style="font-family:var(--mono);font-size:12px;color:var(--red);">~14%</span></td>
+            <td><span class="sev-dot sev-3"></span>Highest in city</td>
+            <td>English, Spanish</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="nbhd-name"><span class="sev-dot sev-3"></span>Clay Arsenal</div>
+              <div class="nbhd-desc">North of campus</div>
+            </td>
+            <td><span style="font-family:var(--mono);font-size:11px;">0.3–0.8 mi</span></td>
+            <td><span style="font-size:11px;">Diabetes, physical health</span></td>
+            <td>
+              <span style="font-family:var(--mono);font-size:12px;font-weight:500;">~22%</span>
+              <div style="margin-top:4px;"><span class="bar-mini" style="width:66px;background:var(--red);"></span></div>
+            </td>
+            <td><span style="font-family:var(--mono);font-size:12px;">~25%</span></td>
+            <td><span style="font-family:var(--mono);font-size:12px;color:var(--red);">~15%</span></td>
+            <td><span class="sev-dot sev-3"></span>Highest in city</td>
+            <td>English, Spanish</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="nbhd-name"><span class="sev-dot sev-3"></span>Frog Hollow</div>
+              <div class="nbhd-desc">South of campus</div>
+            </td>
+            <td><span style="font-family:var(--mono);font-size:11px;">0.5–1.2 mi</span></td>
+            <td><span style="font-size:11px;">MH, inactivity, overcrowding</span></td>
+            <td>
+              <span style="font-family:var(--mono);font-size:12px;font-weight:500;">~19%</span>
+              <div style="margin-top:4px;"><span class="bar-mini" style="width:57px;background:var(--red);"></span></div>
+            </td>
+            <td><span style="font-family:var(--mono);font-size:12px;">~26%</span></td>
+            <td><span style="font-family:var(--mono);font-size:12px;color:var(--red);">~16%</span></td>
+            <td><span class="sev-dot sev-3"></span>High</td>
+            <td>Spanish primary</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="nbhd-name"><span class="sev-dot sev-2"></span>Northeast</div>
+              <div class="nbhd-desc">North / northeast</div>
+            </td>
+            <td><span style="font-family:var(--mono);font-size:11px;">0.5–1.5 mi</span></td>
+            <td><span style="font-size:11px;">Life expectancy, COPD</span></td>
+            <td>
+              <span style="font-family:var(--mono);font-size:12px;font-weight:500;">~18%</span>
+              <div style="margin-top:4px;"><span class="bar-mini" style="width:54px;background:var(--amber);"></span></div>
+            </td>
+            <td><span style="font-family:var(--mono);font-size:12px;">~23%</span></td>
+            <td><span style="font-family:var(--mono);font-size:12px;color:var(--amber);">~13%</span></td>
+            <td><span class="sev-dot sev-2"></span>High</td>
+            <td>English</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="nbhd-name"><span class="sev-dot sev-2"></span>Downtown</div>
+              <div class="nbhd-desc">East / adjacent</div>
+            </td>
+            <td><span style="font-family:var(--mono);font-size:11px;">0–0.3 mi</span></td>
+            <td><span style="font-size:11px;">MH, homelessness, access</span></td>
+            <td>
+              <span style="font-family:var(--mono);font-size:12px;font-weight:500;">~15%</span>
+              <div style="margin-top:4px;"><span class="bar-mini" style="width:45px;background:var(--amber);"></span></div>
+            </td>
+            <td><span style="font-family:var(--mono);font-size:12px;">~28%</span></td>
+            <td><span style="font-family:var(--mono);font-size:12px;color:var(--amber);">~12%</span></td>
+            <td><span class="sev-dot sev-2"></span>Moderate</td>
+            <td>Mixed</td>
+          </tr>
+          <tr style="background:var(--bg2);">
+            <td>
+              <div class="nbhd-name" style="color:var(--ink3);">CT state average</div>
+            </td>
+            <td>—</td>
+            <td>—</td>
+            <td><span style="font-family:var(--mono);font-size:12px;">10.8%</span></td>
+            <td><span style="font-family:var(--mono);font-size:12px;">16.2%</span></td>
+            <td><span style="font-family:var(--mono);font-size:12px;">5.6%</span></td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-label" style="margin-bottom:0.75rem;">Housing instability → health outcomes</div>
+        <div style="font-size:12px;color:var(--ink2);line-height:1.7;">
+          <p style="margin-bottom:0.75rem;">A resident in the most unstable housing tract is <strong>34–36% more likely</strong> to report poor mental or physical health. The correlation is direct, not incidental.</p>
+          <p style="margin-bottom:0.75rem;">The highest-instability neighborhoods — Asylum Hill, Clay Arsenal, Northeast, Upper Albany — directly ring the HHC campus. Smoking, COPD, diabetes, obesity, and physical inactivity all track housing instability at the census-tract level.</p>
+          <p>This means the campus expansion's ground-floor program strategy is not a nice-to-have. It is the clinical intervention.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-label" style="margin-bottom:0.75rem;">Transit access to Hartford Hospital</div>
+        <div style="font-size:12px;color:var(--ink2);line-height:1.7;">
+          <p style="margin-bottom:0.75rem;"><strong>~38% of Hartford households have no vehicle.</strong> CTfastrak and CTtransit Route 60 (Farmington Ave / Asylum Ave) are the primary access corridors into the campus for Asylum Hill and Frog Hollow residents.</p>
+          <p style="margin-bottom:0.75rem;">The Seymour St / Farmington Ave intersection is the critical node. Bus frequency drops off after 7pm and on weekends — exactly when non-emergency conditions become emergencies.</p>
+          <p>Design implication: campus edges must be transit-legible, pedestrian-prioritized, and active at all hours — not a sea of surface parking between community and care.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 4 — WHAT GETS MISSED
+  ══════════════════════════════════════════ -->
+  <div class="panel" id="tab-forgotten">
+
+    <div class="section-header">
+      <div class="section-label">Indicators that don't make it into standard CHNAs</div>
+      <div class="section-desc">These are the factors that determine whether a person accesses care at all — before any clinical outcome is recorded. They are structural, financial, and cultural. Standard health assessments measure what happens inside the system. These measure what stops people from getting there.</div>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:1.5rem;">
+
+      <div class="forgotten-card">
+        <div class="forgotten-num">$1,323</div>
+        <div class="forgotten-title">CT ALS ambulance rate — uninsured full exposure</div>
+        <div class="forgotten-body">Ground ambulances are excluded from the No Surprises Act. An uninsured resident who calls 911 receives the full bill. For an ALICE household, this is 3–4 weeks of net income — and a primary reason people avoid calling for help. BLS rate is $872. Both can tip a household into medical debt.</div>
+        <div class="forgotten-source">CT OEMS Rate Schedule 2024 · PIRG 2024 · GoodRx</div>
+      </div>
+
+      <div class="forgotten-card">
+        <div class="forgotten-num amber">20 yrs</div>
+        <div class="forgotten-title">Life expectancy gap — same state, different zip</div>
+        <div class="forgotten-body">NE Hartford: 68.9 years (94% Black + Hispanic). Westport: 89.1 years (91% white). This gap is not genetic or behavioral — it maps directly to income, housing quality, pollution exposure, food access, and stress load. The campus sits at the edge of the low end of that gap.</div>
+        <div class="forgotten-source">Access Health CT · CDC USALEEP 2010–2015</div>
+      </div>
+
+      <div class="forgotten-card">
+        <div class="forgotten-num blue">52%</div>
+        <div class="forgotten-title">Hispanic CT enrollees with health insurance but no PCP</div>
+        <div class="forgotten-body">Insurance alone is not access. 52% of Hispanic QHP enrollees and 46% of Black enrollees in Connecticut do not have a primary care provider — vs 19% of white enrollees. Without a PCP, every condition escalates to ER level before it is addressed. The campus expansion must prioritize PCP co-location and walk-in primary care at the community interface.</div>
+        <div class="forgotten-source">UConn Health Disparities Institute / AJMC 2023 · AHCT data</div>
+      </div>
+
+      <div class="forgotten-card">
+        <div class="forgotten-num">~38%</div>
+        <div class="forgotten-title">Hartford households with no vehicle</div>
+        <div class="forgotten-body">Nearly 4 in 10 Hartford households cannot drive to the hospital. CTfastrak and city bus are the access infrastructure. Bus service degrades evenings + weekends — when non-emergency conditions become emergencies. Campus design that does not account for pedestrian and transit legibility is not designed for its actual patient population.</div>
+        <div class="forgotten-source">DataUSA / ACS 2023 · CTtransit</div>
+      </div>
+
+      <div class="forgotten-card">
+        <div class="forgotten-num amber">34%</div>
+        <div class="forgotten-title">Hartford United Way 211 calls — health-related</div>
+        <div class="forgotten-body">Of 46,333 calls from the Hartford region to United Way 211 in one year, 34% were for health-related support. This is an unmet need index — people looking for help outside the clinical system because the clinical system is inaccessible. Food, housing, and health are co-presenting problems, not separate categories.</div>
+        <div class="forgotten-source">United Way of Central and Northeastern CT 2022</div>
+      </div>
+
+      <div class="forgotten-card">
+        <div class="forgotten-num blue">44.5%</div>
+        <div class="forgotten-title">Hartford residents who are Hispanic — language as a structural barrier</div>
+        <div class="forgotten-body">Nearly half of Hartford is Hispanic; Spanish is the primary language in Frog Hollow and Clay Arsenal — the two neighborhoods south and north of the campus. Limited English proficiency reduces health insurance literacy, PCP utilization, and survey participation, meaning health data likely undercounts the actual burden. Interpreter access is not a courtesy — it is a clinical safety requirement.</div>
+        <div class="forgotten-source">DataUSA 2024 · ACS · AJMC CT health literacy study</div>
+      </div>
+
+      <div class="forgotten-card">
+        <div class="forgotten-num">~54%</div>
+        <div class="forgotten-title">Hartford renters — cost-burdened (30%+ income on rent)</div>
+        <div class="forgotten-body">When 54% of households spend more than 30% of income on housing, healthcare becomes discretionary. Missed appointments, skipped prescriptions, and avoided screenings are economic decisions — not indifference. ALICE households face a permanent zero-sum tradeoff between rent, food, and care. The campus serves this population daily.</div>
+        <div class="forgotten-source">DataHaven 2023 Hartford Equity Report · HHC CHNA 2025</div>
+      </div>
+
+      <div class="forgotten-card">
+        <div class="forgotten-num amber">100K+</div>
+        <div class="forgotten-title">CT residents projected to lose Medicaid by 2034</div>
+        <div class="forgotten-body">Federal Medicaid changes are projected to remove coverage from 100,000+ Connecticut residents by 2034 (KFF/CBO estimate). Hartford, with the highest Medicaid-dependent population in the state, absorbs the largest share of this risk. The uninsured rate is already trending up. The campus expansion's community health program will operate in a structurally worsening access environment.</div>
+        <div class="forgotten-source">HHC CHNA 2025 · CBO · KFF</div>
+      </div>
+
+      <div class="forgotten-card">
+        <div class="forgotten-num red">2×</div>
+        <div class="forgotten-title">Avoidable ER hospitalizations — Hartford vs CT</div>
+        <div class="forgotten-body">Conditions like diabetes, asthma, hypertension, and mental health disorders result in preventable hospitalizations at twice the state rate in Hartford. These are not acute events — they are failures of upstream access. Each one represents a person who could not reach routine care in time. Every avoidable ER visit costs the system $1,800–$3,500 that a PCP visit would cost $200.</div>
+        <div class="forgotten-source">DataHaven 2023 · Connecticut Public / DataHaven Health Disparities Report</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 5 — DESIGN RESPONSES
+  ══════════════════════════════════════════ -->
+  <div class="panel" id="tab-design">
+
+    <div class="section-header">
+      <div class="section-label">PRECEDE Act layer — evidence-based design responses</div>
+      <div class="section-desc">Each response is tied directly to a documented health indicator for the campus context. Scale: Architectural (building skin, systems, program) · Interior (spatial experience, materials, environment) · Urban (site, street, campus edge, mobility).</div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Design premise</div>
+      <div class="callout-text">The standard hospital design brief asks: how do we make care efficient and comfortable for patients who arrive? The Hartford campus brief must also ask: <strong>why are people not arriving — and what can the building do about that?</strong> Ground floor activation, transit legibility, interpreter infrastructure, and walk-in access points are not amenities. They are public health infrastructure.</div>
+    </div>
+
+    <div class="grid-3">
+
+      <div class="design-card">
+        <span class="design-scale scale-arch">Architectural</span>
+        <div class="design-title">Respiratory-first envelope</div>
+        <div class="design-body">13 Hartford census tracts rank in the top 10% nationally for asthma rates. The I-84 corridor runs directly adjacent to the campus — diesel particulate exposure is continuous for Asylum Hill. Specify MERV-13+ filtration, no off-gassing materials, operable windows on patient-facing facades. Low-VOC finishes throughout. Asthma management begins at the building skin.</div>
+        <div class="design-driver">Driver: Asthma 16.8% (CT avg 10.2%) · COPD · I-84 diesel exposure · top national decile</div>
+      </div>
+
+      <div class="design-card">
+        <span class="design-scale scale-arch">Architectural</span>
+        <div class="design-title">Ground-floor community health interface</div>
+        <div class="design-body">The new HHC garage / clinic building is a design intervention opportunity at the Asylum Ave campus edge. Ground floor should activate with dental, metabolic health, behavioral health walk-in, and interpreter-supported primary care. This is the interface between the hospital and the community that cannot reach it. 52% of Hispanic patients have no PCP — this floor can address that directly.</div>
+        <div class="design-driver">Driver: 52% Hispanic + 46% Black enrollees no PCP · dental visits 52% (CT avg 68%) · Asylum Hill adjacency</div>
+      </div>
+
+      <div class="design-card">
+        <span class="design-scale scale-int">Interior</span>
+        <div class="design-title">Circadian + biophilic environments</div>
+        <div class="design-body">Depression and poor mental health are 38–43% above state average. Mental health issues in Hartford span the full city — not concentrated in one neighborhood — suggesting systemic stress load. Tunable LED lighting (2700–6500K), maximum daylight penetration into waiting and recovery zones, biophilic elements in corridors and patient rooms. Eliminate uniform fluorescent environments.</div>
+        <div class="design-driver">Driver: Depression 32.2% · Poor MH 23.1% (CT avg 16.2%) · housing stress · ALICE economic pressure</div>
+      </div>
+
+      <div class="design-card">
+        <span class="design-scale scale-int">Interior</span>
+        <div class="design-title">Integrated behavioral health access</div>
+        <div class="design-body">De-stigmatized walk-in behavioral health points co-located at primary care check-in — not down a separate hallway. Design for acoustic privacy without spatial isolation. Seating that supports different cultural norms of personal space. Wayfinding in Spanish and English at minimum. Hartford has 50%+ of the state's highest-burden poor mental health census tracts.</div>
+        <div class="design-driver">Driver: Depression + MH · 50%+ state's worst MH tracts · language access · NE Hartford life expectancy 68.9yr</div>
+      </div>
+
+      <div class="design-card">
+        <span class="design-scale scale-urban">Urban</span>
+        <div class="design-title">Transit-legible campus edges</div>
+        <div class="design-body">38% of Hartford households have no vehicle. CTfastrak and Route 60 (Farmington/Asylum) are how most community members reach the campus. The Seymour St and Asylum Ave edges must be pedestrian-prioritized, transit-shelter integrated, and active at all hours. Wayfinding from Asylum Hill residential clusters to campus entrances must be explicit. A campus that reads as parking infrastructure from the street fails its population.</div>
+        <div class="design-driver">Driver: 38% no-vehicle households · missed appts 2× state avg · CTfastrak access · ALICE no-margin for taxi/rideshare</div>
+      </div>
+
+      <div class="design-card">
+        <span class="design-scale scale-urban">Urban</span>
+        <div class="design-title">Active mobility + visible stairs</div>
+        <div class="design-body">Obesity (36.2%) and physical inactivity (35.1%) are structural outcomes of car-dependent neighborhoods and sedentary environments, not individual choice. New buildings should have prominently located, naturally lit stairways as the default path — not the emergency exit. Grade-separated pedestrian paths connecting to Asylum Hill and Frog Hollow. End-of-trip cycling facilities.</div>
+        <div class="design-driver">Driver: Obesity +32% · Physical inactivity +57% · Morrow High School active design precedent · diabetes management</div>
+      </div>
+
+      <div class="design-card">
+        <span class="design-scale scale-urban">Urban</span>
+        <div class="design-title">Food access + green infrastructure</div>
+        <div class="design-body">Asylum Hill and Frog Hollow are food-stressed neighborhoods. The campus produces significant food waste. Ground-floor or rooftop food programming — community kitchen, produce distribution point, or SNAP-accessible café — addresses a direct SDOH driver for diabetes and obesity while activating campus edges. Green infrastructure (bioswales, street trees) reduces heat island and air quality burden.</div>
+        <div class="design-driver">Driver: Diabetes 18.4% · Obesity 36.2% · ALICE households · food desert proximity · air quality / asthma</div>
+      </div>
+
+      <div class="design-card">
+        <span class="design-scale scale-arch">Architectural</span>
+        <div class="design-title">Interpreter infrastructure — spatial + digital</div>
+        <div class="design-body">44.5% of Hartford is Hispanic; Frog Hollow and Clay Arsenal are Spanish-primary communities. Language access is a clinical safety requirement, not a courtesy. Design for interpreter rooms and video interpretation stations at registration, triage, and discharge. Signage in Spanish and English at minimum. Low health insurance literacy among Spanish-speaking populations requires face-to-face navigation support at campus entry points.</div>
+        <div class="design-driver">Driver: 44.5% Hispanic · 23.7% foreign-born · 52% no PCP · health insurance literacy gap · AJMC CT data</div>
+      </div>
+
+      <div class="design-card">
+        <span class="design-scale scale-int">Interior</span>
+        <div class="design-title">Staff resilience + respite spaces</div>
+        <div class="design-body">A campus serving a high-acuity, high-complexity patient population with disproportionate trauma and chronic disease burden generates significant caregiver stress. Dedicated staff respite areas — acoustically private, with daylight and biophilic conditions — are not luxury items. They are retention infrastructure. Hartford's healthcare workforce is already strained; the built environment can reduce burnout load.</div>
+        <div class="design-driver">Driver: High-acuity population · MH burden · workforce retention · HHC 2025 CHNA staff wellbeing findings</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SOURCE FOOTER -->
+  <div class="source-bar">
+    Sources: CDC PLACES 2024 (census tract data, Hartford city) · DataHaven 2023 Hartford Equity Report · Hartford HealthCare CHNA 2025 (Hartford Hospital) · DataHaven Community Focus Groups 2025 · CTData Hartford Housing + Health Analysis · UConn Health Disparities Institute / AJMC · Access Health CT Health Equity Data · CT OEMS Ambulance Rate Schedule 2024 · DataUSA / ACS 2023 · United Way 211 Hartford 2022 · PIRG Ground Ambulance Billing Report 2024 · Perkins &amp; Will PRECEDE Framework (precede.perkinswill.com)<br>
+    Neighborhood-level estimates derived from census-tract aggregates; exact tract boundaries vary. For precise PRECEDE tool output, run 80 Seymour St, Hartford CT 06102 at precede.perkinswill.com.
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+/* ── Tab switching ── */
+function switchTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+/* ── Bar row builder ── */
+function makeBar(label, htVal, ctVal, color, higherBetter) {
+  const maxV = Math.max(htVal, ctVal) * 1.3;
+  const htW  = (htVal / maxV) * 100;
+  const ctW  = (ctVal / maxV) * 100;
+  const diff = ((htVal - ctVal) / ctVal * 100);
+  const sign = diff > 0 ? '+' : '';
+  let diffClass = 'neutral';
+  if (higherBetter) {
+    diffClass = diff > 2 ? 'down' : diff < -2 ? 'up' : 'neutral';
+  } else {
+    diffClass = diff > 2 ? 'up' : diff < -2 ? 'down' : 'neutral';
+  }
+  return `<div class="bar-row">
+    <div class="bar-name">${label}</div>
+    <div class="bar-track">
+      <div class="bar-fill" style="width:${htW.toFixed(1)}%;background:${color};"></div>
+      <div class="bar-ct-mark" style="left:${ctW.toFixed(1)}%;"></div>
+    </div>
+    <div class="bar-meta">
+      <span class="bar-pct">${htVal.toFixed(1)}%</span>
+      <span class="bar-diff ${diffClass}">${sign}${Math.round(diff)}% vs CT</span>
+    </div>
+  </div>`;
+}
+
+/* ── Render bars ── */
+const outcomes = [
+  ['Diabetes',             18.4, 10.8],
+  ['Obesity',              36.2, 27.5],
+  ['Poor mental health',   23.1, 16.2],
+  ['Poor physical health', 20.8, 13.5],
+  ['High blood pressure',  41.6, 32.1],
+  ['Current asthma',       16.8, 10.2],
+  ['Depression',           32.2, 23.4],
+  ['Heart disease',         8.1,  5.6],
+];
+document.getElementById('bars-outcomes').innerHTML =
+  outcomes.map(d => makeBar(d[0], d[1], d[2], '#C83B3B', false)).join('');
+
+const prevention = [
+  ['Annual checkup',         63.2, 73.5],
+  ['Dental visit (past yr)', 52.1, 68.4],
+  ['Cholesterol screening',  70.6, 80.3],
+  ['Colorectal screening',   58.4, 67.2],
+];
+document.getElementById('bars-prevention').innerHTML =
+  prevention.map(d => makeBar(d[0], d[1], d[2], '#1A5FA0', true)).join('');
+
+const behaviors = [
+  ['Current smoking',     22.5, 14.1],
+  ['Physical inactivity', 35.1, 22.3],
+  ['Insufficient sleep',  42.3, 33.8],
+];
+document.getElementById('bars-behaviors').innerHTML =
+  behaviors.map(d => makeBar(d[0], d[1], d[2], '#B87318', false)).join('');
+
+/* ── PCP bars ── */
+const pcpData = [
+  ['White enrollees',    19, 19],
+  ['Black enrollees',    46, 19],
+  ['Hispanic enrollees', 52, 19],
+];
+document.getElementById('bars-pcp').innerHTML =
+  pcpData.map(d => makeBar(d[0], d[1], d[2], '#C83B3B', false)).join('');
+
+/* ── Ambulance bars ── */
+const ambData = [
+  ['BLS (Basic Life Support)',     872,  872],
+  ['ALS Level 1 Non-ER',          841,  841],
+  ['ALS Level 1 ER',             1323, 1323],
+];
+const ambMax = 1500;
+document.getElementById('bars-ambulance').innerHTML = ambData.map(d => `
+  <div class="bar-row">
+    <div class="bar-name">${d[0]}</div>
+    <div class="bar-track">
+      <div class="bar-fill" style="width:${(d[1]/ambMax*100).toFixed(1)}%;background:#B87318;"></div>
+    </div>
+    <div class="bar-meta">
+      <span class="bar-pct" style="font-family:var(--mono);">$${d[1].toLocaleString()}</span>
+      <span class="bar-diff neutral">CT 2024 max rate</span>
+    </div>
+  </div>`).join('');
+</script>
+
+</body>
+</html>
